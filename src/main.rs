@@ -11,12 +11,19 @@ use agb::display::{
     Priority,
     tiled::{RegularBackground, RegularBackgroundSize, TileFormat},
 };
+
+use agb::sound::mixer::Frequency;
+use agb_tracker::{Track, Tracker};
+
 use agb::include_background_gfx;
+use agb_tracker::include_xm;
 
 include_background_gfx!(
     mod background,
     PLAY_FIELD => "gfx/bg.png",
 );
+
+static BGM: Track = include_xm!("sfx/bgm.xm");
 
 #[agb::entry]
 fn main(mut gba: agb::Gba) -> ! {
@@ -32,11 +39,17 @@ fn main(mut gba: agb::Gba) -> ! {
 
     let mut gfx = gba.graphics.get();
 
+    let mut mixer = gba.mixer.mixer(Frequency::Hz32768);
+    let mut tracker = Tracker::new(&BGM);
+
     loop {
         let mut frame = gfx.frame();
 
         bg.show(&mut frame);
 
+        tracker.step(&mut mixer);
+
+        mixer.frame();
         frame.commit();
     }
 }
