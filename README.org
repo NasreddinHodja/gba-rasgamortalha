@@ -1,0 +1,4 @@
+#+title: GBA RM
+
+* Overview
+Just exploring [[https://agbrs.dev/][agb]] crate for rust...
